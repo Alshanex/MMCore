@@ -17,26 +17,25 @@ public record BuffStackingRule(
 ) {
     public static List<BuffStackingRule> resolveAll() {
         List<BuffStackingRule> resolved = new ArrayList<>();
-        for (BuffStackingConfig.RawRule raw : BuffStackingConfig.getRules()) {
+        for (BuffStackingConfig.EffectRawRule raw : BuffStackingConfig.getEffectRules()) {
             resolve(raw).ifPresent(resolved::add);
         }
-        MMCore.LOGGER.debug("[BuffStacking] Resolved {} valid rule(s).", resolved.size());
+        MMCore.LOGGER.debug("[BuffStacking] Resolved {} effect rule(s).", resolved.size());
         return resolved;
     }
 
-    private static Optional<BuffStackingRule> resolve(BuffStackingConfig.RawRule raw) {
+    private static Optional<BuffStackingRule> resolve(BuffStackingConfig.EffectRawRule raw) {
         List<MobEffect> active   = resolveEffects(raw.activeEffects(),   "active_effects");
         List<MobEffect> incoming = resolveEffects(raw.incomingEffects(), "incoming_effects");
 
         if (active.isEmpty() || incoming.isEmpty()) {
-            MMCore.LOGGER.warn("[BuffStacking] Skipping rule — no valid effects resolved. Raw: {}", raw);
+            MMCore.LOGGER.warn("[BuffStacking] Skipping effect rule — no valid effects resolved. Raw: {}", raw);
             return Optional.empty();
         }
-
         return Optional.of(new BuffStackingRule(active, incoming, raw.replace()));
     }
 
-    private static List<MobEffect> resolveEffects(List<String> ids, String fieldName) {
+    static List<MobEffect> resolveEffects(List<String> ids, String fieldName) {
         List<MobEffect> effects = new ArrayList<>();
         for (String id : ids) {
             ResourceLocation rl = ResourceLocation.tryParse(id.trim());
@@ -46,7 +45,7 @@ public record BuffStackingRule(
             }
             MobEffect effect = BuiltInRegistries.MOB_EFFECT.get(rl);
             if (effect == null) {
-                MMCore.LOGGER.warn("[BuffStacking] Unknown effect '{}' in {}", id, fieldName);
+                MMCore.LOGGER.warn("[BuffStacking] Unknown effect '{}' in {} — is the mod loaded?", id, fieldName);
             } else {
                 effects.add(effect);
             }

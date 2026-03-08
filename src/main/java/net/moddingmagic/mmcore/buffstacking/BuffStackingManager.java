@@ -1,5 +1,8 @@
 package net.moddingmagic.mmcore.buffstacking;
 
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
@@ -8,20 +11,24 @@ import java.util.List;
 
 public class BuffStackingManager {
 
-    private static List<BuffStackingRule> rules = List.of();
+    private static List<BuffStackingRule>  effectRules = List.of();
+    private static List<SpellStackingRule> spellRules  = List.of();
 
     /** Re-resolve rules from the current config values. */
     public static void reload() {
-        rules = BuffStackingRule.resolveAll();
+        effectRules = BuffStackingRule.resolveAll();
+        spellRules  = SpellStackingRule.resolveAll();
     }
 
-    public static RuleResult evaluate(LivingEntity entity, MobEffectInstance incoming) {
+    // Effect evaluation
+
+    public static RuleResult evaluateEffect(LivingEntity entity, MobEffectInstance incoming) {
         MobEffect incomingType = incoming.getEffect().value();
 
         for (MobEffectInstance activeInstance : entity.getActiveEffects()) {
             MobEffect activeType = activeInstance.getEffect().value();
 
-            for (BuffStackingRule rule : rules) {
+            for (BuffStackingRule rule : effectRules) {
                 if (rule.matches(activeType, incomingType)) {
                     return rule.replace()
                             ? RuleResult.replace(activeInstance)
@@ -29,9 +36,29 @@ public class BuffStackingManager {
                 }
             }
         }
-
         return RuleResult.allow();
     }
+
+    // Spell evaluation
+
+    public static RuleResult evaluateSpell(LivingEntity caster, ResourceLocation spellId) {
+        AbstractSpell spell = SpellRegistry.getSpell(spellId);
+        for (MobEffectInstance activeInstance : caster.getActiveEffects()) {
+            MobEffect activeType = activeInstance.getEffect().value();
+
+            for (SpellStackingRule rule : spellRules) {
+
+                if (rule.matches(activeType, spell)) {
+                    return rule.replace()
+                            ? RuleResult.replace(activeInstance)
+                            : RuleResult.cancel();
+                }
+            }
+        }
+        return RuleResult.allow();
+    }
+
+    // Result type
 
     public enum Action { ALLOW, CANCEL, REPLACE }
 
