@@ -4,7 +4,7 @@ import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffect;
-import net.moddingmagic.mmcore.BuffStackingConfig;
+import net.moddingmagic.mmcore.config.BuffStackingConfig;
 import net.moddingmagic.mmcore.MMCore;
 
 import java.util.ArrayList;

@@ -1,0 +1,16 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "net.moddingmagic.mmcore.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "refmap": "mmcore.refmap.json",
+  "mixins": [
+    "SpellAccessorMixin",
+    "SpellPowerMixin"
+  ],
+  "client": [],
+  "server": [],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

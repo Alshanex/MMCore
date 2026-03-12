@@ -1,6 +1,8 @@
-package net.moddingmagic.mmcore;
+package net.moddingmagic.mmcore.config;
 
 import com.electronwill.nightconfig.core.Config;
+import com.electronwill.nightconfig.core.UnmodifiableConfig;
+import net.moddingmagic.mmcore.MMCore;
 import net.neoforged.neoforge.common.ModConfigSpec;
 import java.util.List;
 
@@ -10,11 +12,11 @@ public class BuffStackingConfig {
 
     // Effect-vs-effect rules
 
-    private static final ModConfigSpec.ConfigValue<List<? extends Config>> EFFECT_RULES;
+    private static final ModConfigSpec.ConfigValue<List<? extends UnmodifiableConfig>> EFFECT_RULES;
 
     // Spell-vs-effect rules
 
-    private static final ModConfigSpec.ConfigValue<List<? extends Config>> SPELL_RULES;
+    private static final ModConfigSpec.ConfigValue<List<? extends UnmodifiableConfig>> SPELL_RULES;
 
     static {
         ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
@@ -42,9 +44,14 @@ public class BuffStackingConfig {
                             cfg.set("active_effects", List.of("minecraft:regeneration"));
                             cfg.set("incoming_effects", List.of("minecraft:poison"));
                             cfg.set("replace", true);
+                        }),
+                        makeConfig(cfg -> {
+                            cfg.set("active_effects", List.of("minecraft:absorption", "minecraft:resistance"));
+                            cfg.set("incoming_effects", List.of("minecraft:absorption", "minecraft:resistance"));
+                            cfg.set("replace", true);
                         })
                 ),
-                entry -> entry instanceof Config cfg
+                entry -> entry instanceof UnmodifiableConfig cfg
                         && cfg.contains("active_effects")
                         && cfg.contains("incoming_effects")
                         && cfg.contains("replace")
@@ -78,7 +85,7 @@ public class BuffStackingConfig {
                             cfg.set("replace", true);
                         })
                 ),
-                entry -> entry instanceof Config cfg
+                entry -> entry instanceof UnmodifiableConfig cfg
                         && cfg.contains("active_effects")
                         && cfg.contains("blocked_spells")
                         && cfg.contains("replace")
@@ -106,7 +113,7 @@ public class BuffStackingConfig {
 
     // Parsers
 
-    private static EffectRawRule parseEffectRule(Config cfg) {
+    private static EffectRawRule parseEffectRule(UnmodifiableConfig cfg) {
         try {
             List<String> activeEffects = cfg.get("active_effects");
             List<String> incomingEffects = cfg.get("incoming_effects");
@@ -127,7 +134,7 @@ public class BuffStackingConfig {
         }
     }
 
-    private static SpellRawRule parseSpellRule(Config cfg) {
+    private static SpellRawRule parseSpellRule(UnmodifiableConfig cfg) {
         try {
             List<String> activeEffects = cfg.get("active_effects");
             List<String> blockedSpells = cfg.get("blocked_spells");

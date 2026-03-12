@@ -28,6 +28,8 @@ public class BuffStackingManager {
         for (MobEffectInstance activeInstance : entity.getActiveEffects()) {
             MobEffect activeType = activeInstance.getEffect().value();
 
+            if (activeType == incomingType) continue;
+
             for (BuffStackingRule rule : effectRules) {
                 if (rule.matches(activeType, incomingType)) {
                     return rule.replace()

@@ -1,6 +1,8 @@
 package net.moddingmagic.mmcore;
 
 import net.moddingmagic.mmcore.buffstacking.BuffStackingManager;
+import net.moddingmagic.mmcore.config.BuffStackingConfig;
+import net.moddingmagic.mmcore.config.FormulaConfig;
 import net.neoforged.fml.event.config.ModConfigEvent;
 import org.slf4j.Logger;
 
@@ -30,8 +32,6 @@ public class MMCore {
         // Register the commonSetup method for modloading
         modEventBus.addListener(this::commonSetup);
 
-
-
         // Register ourselves for server and other game events we are interested in.
         // Note that this is necessary if and only if we want *this* class (ExampleMod) to respond directly to events.
         // Do not add this line if there are no @SubscribeEvent-annotated functions in this class, like onServerStarting() below.
@@ -42,6 +42,7 @@ public class MMCore {
 
         // Register our mod's ModConfigSpec so that FML can create and load the config file for us
         modContainer.registerConfig(ModConfig.Type.COMMON, BuffStackingConfig.SPEC, "mmcore-buff-stacking.toml");
+        modContainer.registerConfig(ModConfig.Type.COMMON, FormulaConfig.SPEC, "mmcore-formulas.toml");
 
         modEventBus.addListener(this::onConfigLoad);
         modEventBus.addListener(this::onConfigReload);
