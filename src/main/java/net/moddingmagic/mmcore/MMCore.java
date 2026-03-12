@@ -3,7 +3,9 @@ package net.moddingmagic.mmcore;
 import net.moddingmagic.mmcore.buffstacking.BuffStackingManager;
 import net.moddingmagic.mmcore.config.BuffStackingConfig;
 import net.moddingmagic.mmcore.config.FormulaConfig;
+import net.moddingmagic.mmcore.effect_categories.EffectCategoryManager;
 import net.neoforged.fml.event.config.ModConfigEvent;
+import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -61,6 +63,11 @@ public class MMCore {
     @SubscribeEvent
     public void onServerStarting(ServerStartingEvent event) {
 
+    }
+
+    @SubscribeEvent
+    public void onAddReloadListeners(AddReloadListenerEvent event) {
+        event.addListener(EffectCategoryManager.INSTANCE);
     }
 
     private void onConfigLoad(ModConfigEvent.Loading event) {
