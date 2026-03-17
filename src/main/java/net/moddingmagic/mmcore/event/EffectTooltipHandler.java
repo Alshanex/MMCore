@@ -8,6 +8,7 @@ import net.moddingmagic.mmcore.effect_categories.EffectCategory;
 import net.moddingmagic.mmcore.effect_categories.EffectCategoryManager;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.GatherEffectScreenTooltipsEvent;
 
@@ -18,6 +19,10 @@ public class EffectTooltipHandler {
 
     @SubscribeEvent
     public static void onGatherEffectTooltips(GatherEffectScreenTooltipsEvent event) {
+        if (ModList.get().isLoaded("jeed")) {
+            return;
+        }
+
         Holder<MobEffect> effectHolder = event.getEffectInstance().getEffect();
 
         List<EffectCategory> categories = EffectCategoryManager.INSTANCE.getCategoriesForEffect(effectHolder);

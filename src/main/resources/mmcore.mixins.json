@@ -8,7 +8,9 @@
     "SpellAccessorMixin",
     "SpellPowerMixin"
   ],
-  "client": [],
+  "client": [
+    "JeedEffectRendererMixin"
+  ],
   "server": [],
   "injectors": {
     "defaultRequire": 1
